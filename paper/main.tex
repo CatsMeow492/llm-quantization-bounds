@@ -14,6 +14,7 @@
 \usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{amsthm}
 
 % Page setup
 \geometry{margin=1in}
@@ -25,16 +26,20 @@
 \newcommand{\Var}{\text{Var}}
 \newcommand{\norm}[1]{\left\|#1\right\|}
 \newcommand{\bigO}{\mathcal{O}}
-\newcommand{\tilde}{\widetilde}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
 
 % Title and authors
 \title{Quantization Bounds in LoRA Fine-tuning: \\
 Theoretical Analysis and Empirical Validation}
 
 \author{
-Research Team\\
-Quantization Bounds Project\\
-\texttt{research@quantization-bounds.org}
+Taylor Mohney\thanks{Corresponding author: \texttt{taylormohney@icloud.com}} \and Dorian Hryniewicki\\
+\\
+\textit{Quantization Bounds Research Project}
 }
 
 \date{\today}
@@ -207,7 +212,7 @@ We validate our theoretical predictions through systematic experiments on DialoG
 
 \item \textbf{Gradient Variance Validation}: Measured gradient variance follows the predicted $\mathcal{O}(r \cdot 2^{-2b})$ scaling.
 
-\item \textbf{Optimal Bit-width Rule}: Our theoretical bit-width selection rule provides practical guidance, suggesting 8-bit precision for ranks ≤ 16 and 16-bit for higher ranks.
+\item \textbf{Optimal Bit-width Rule}: Our theoretical bit-width selection rule provides practical guidance, suggesting 8-bit precision for ranks $\leq$ 16 and 16-bit for higher ranks.
 \end{enumerate}
 
 \subsection{Practical Implications}
