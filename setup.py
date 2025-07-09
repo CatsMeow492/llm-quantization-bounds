@@ -6,46 +6,46 @@ Creates reproducible environment for DialoGPT fine-tuning experiments
 
 from setuptools import setup, find_packages
 
-# Core dependencies with pinned versions for reproducibility
+# Core dependencies with current versions for compatibility
 REQUIREMENTS = [
     # Deep Learning Framework
-    "torch==2.1.0",
-    "torchvision==0.16.0", 
-    "torchaudio==2.1.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0", 
+    "torchaudio>=2.0.0",
     
     # Transformers and Model Hub
-    "transformers==4.35.2",
-    "tokenizers==0.15.0",
-    "datasets==2.14.6",
-    "huggingface-hub==0.19.4",
+    "transformers>=4.30.0",
+    "tokenizers>=0.13.0",
+    "datasets>=2.10.0",
+    "huggingface-hub>=0.15.0",
     
     # Quantization Libraries
-    "bitsandbytes==0.41.3",
-    "accelerate==0.24.1",
-    "peft==0.6.2",  # For LoRA implementation
+    "bitsandbytes>=0.40.0",
+    "accelerate>=0.20.0",
+    "peft>=0.5.0",  # For LoRA implementation
     
     # Scientific Computing
-    "numpy==1.24.3",
-    "scipy==1.11.4",
-    "pandas==2.0.3",
-    "matplotlib==3.7.2",
-    "seaborn==0.12.2",
+    "numpy>=1.20.0",
+    "scipy>=1.8.0",
+    "pandas>=1.5.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
     
     # Jupyter and Analysis
-    "jupyter==1.0.0",
-    "ipykernel==6.25.2",
-    "sympy==1.12",
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+    "sympy>=1.10.0",
     
     # Utilities
-    "tqdm==4.66.1",
-    "wandb==0.15.12",  # For experiment tracking
-    "psutil==5.9.6",   # For system monitoring
-    "GPUtil==1.4.0",   # For GPU monitoring
+    "tqdm>=4.60.0",
+    "wandb>=0.13.0",  # For experiment tracking
+    "psutil>=5.8.0",   # For system monitoring
+    "GPUtil>=1.4.0",   # For GPU monitoring
     
     # Development
-    "pytest==7.4.3",
-    "black==23.10.1",
-    "isort==5.12.0",
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "isort>=5.10.0",
 ]
 
 # Optional dependencies for extended functionality

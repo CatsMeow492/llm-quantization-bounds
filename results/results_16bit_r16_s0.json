@@ -1,0 +1,44 @@
+{
+  "config": {
+    "model_name": "microsoft/DialoGPT-medium",
+    "max_length": 512,
+    "bits": 16,
+    "use_quantization": true,
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.1,
+    "target_modules": [
+      "c_attn",
+      "c_proj",
+      "c_fc"
+    ],
+    "batch_size": 2,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 0.0002,
+    "num_epochs": 1,
+    "warmup_steps": 100,
+    "max_grad_norm": 1.0,
+    "dataset_name": "daily_dialog",
+    "max_train_samples": 100,
+    "max_eval_samples": 200,
+    "seed": 0,
+    "output_dir": "results",
+    "save_model": false,
+    "track_gradients": true
+  },
+  "training_time": 44.863518953323364,
+  "train_loss": 5.119131161616399,
+  "eval_loss": 4.745813369750977,
+  "eval_perplexity": 115.10138742642539,
+  "gradient_stats": {
+    "avg_gradient_norm": 0.7320282451905434,
+    "std_gradient_norm": 0.48759518072615965,
+    "avg_gradient_variance": 1.2296251838961325e-07,
+    "std_gradient_variance": 1.2603271670741378e-07,
+    "total_steps": 50
+  },
+  "model_info": {
+    "total_params": 361114624,
+    "trainable_params": 6291456
+  }
+}

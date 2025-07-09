@@ -181,7 +181,7 @@ def load_dataset_for_dialog(config: ExperimentConfig) -> Tuple[List[str], List[s
     print(f"Loading {config.dataset_name} dataset...")
     
     # Load DailyDialog dataset
-    dataset = load_dataset("daily_dialog")
+    dataset = load_dataset("daily_dialog", trust_remote_code=True)
     
     # Process dialogs into conversation format
     train_texts = []
@@ -264,7 +264,7 @@ def run_experiment(config: ExperimentConfig) -> Dict:
     
     model = AutoModelForCausalLM.from_pretrained(
         config.model_name,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.float32,  # Use float32 for CPU/MPS compatibility
         device_map="auto"
     )
     
@@ -300,13 +300,13 @@ def run_experiment(config: ExperimentConfig) -> Dict:
         warmup_steps=config.warmup_steps,
         max_grad_norm=config.max_grad_norm,
         logging_steps=10,
-        evaluation_strategy="steps",
+        eval_strategy="steps",
         eval_steps=50,
         save_strategy="no",
-        fp16=True,
+        fp16=False,  # Disable fp16 for CPU/MPS compatibility
         dataloader_drop_last=False,
         remove_unused_columns=False,
-        report_to=None,  # Disable wandb for now
+        report_to=[],  # Disable wandb completely
     )
     
     # Custom trainer with gradient tracking
@@ -315,8 +315,8 @@ def run_experiment(config: ExperimentConfig) -> Dict:
             super().__init__(*args, **kwargs)
             self.gradient_tracker = gradient_tracker
         
-        def training_step(self, model, inputs):
-            loss = super().training_step(model, inputs)
+        def training_step(self, model, inputs, num_items_in_batch=None):
+            loss = super().training_step(model, inputs, num_items_in_batch)
             
             # Track gradients if enabled
             if self.gradient_tracker and config.track_gradients:
@@ -346,17 +346,18 @@ def run_experiment(config: ExperimentConfig) -> Dict:
     print("Running final evaluation...")
     eval_result = trainer.evaluate()
     
-    # Collect results
+    # Collect results (convert numpy types to native Python types for JSON serialization)
     results = {
         "config": asdict(config),
-        "training_time": training_time,
-        "train_loss": train_result.training_loss,
-        "eval_loss": eval_result["eval_loss"],
-        "eval_perplexity": np.exp(eval_result["eval_loss"]),
-        "gradient_stats": gradient_tracker.get_statistics(),
+        "training_time": float(training_time),
+        "train_loss": float(train_result.training_loss),
+        "eval_loss": float(eval_result["eval_loss"]),
+        "eval_perplexity": float(np.exp(eval_result["eval_loss"])),
+        "gradient_stats": {k: float(v) if isinstance(v, (np.floating, np.integer)) else v 
+                          for k, v in gradient_tracker.get_statistics().items()},
         "model_info": {
-            "total_params": sum(p.numel() for p in model.parameters()),
-            "trainable_params": sum(p.numel() for p in model.parameters() if p.requires_grad),
+            "total_params": int(sum(p.numel() for p in model.parameters())),
+            "trainable_params": int(sum(p.numel() for p in model.parameters() if p.requires_grad)),
         }
     }
     

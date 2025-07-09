@@ -1,0 +1,16 @@
+,,,eval_loss,eval_loss,perplexity,perplexity,gradient_variance,gradient_variance,training_time
+,,,mean,std,mean,std,mean,std,mean
+bits,rank,source,,,,,,,
+4,4,simulation,3.3737,0.0,29.1876,0.0,0.0052,0.0,
+4,8,simulation,3.8691,0.0,47.899,0.0,0.0104,0.0,
+4,16,simulation,5.1,0.0,164.0202,0.0,0.0208,0.0,
+4,32,simulation,7.2042,0.0,1345.0272,0.0,0.0417,0.0,
+8,4,simulation,2.8258,0.0,16.8737,0.0,0.0,0.0,
+8,8,simulation,2.9407,0.0,18.9291,0.0,0.0,0.0,
+8,16,simulation,3.1676,0.0,23.7501,0.0,0.0001,0.0,
+8,32,simulation,3.1256,0.0,22.7745,0.0,0.0002,0.0,
+16,4,simulation,3.0077,0.0,20.241,0.0,0.0,0.0,
+16,8,simulation,3.1542,0.0,23.4345,0.0,0.0,0.0,
+16,16,experimental,4.7458,,115.1014,,0.0,,44.8635
+16,16,simulation,3.0787,0.0,21.7306,0.0,0.0,0.0,
+16,32,simulation,3.0028,0.0,20.1429,0.0,0.0,0.0,
