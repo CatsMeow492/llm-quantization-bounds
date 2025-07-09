@@ -1,0 +1,79 @@
+\section{Theoretical Analysis}
+
+\subsection{Quantization Noise Model}
+
+We model b-bit uniform quantization as additive noise following~\cite{askari2022qreg,chen2020statistical}:
+\begin{equation}
+w_q = w + \epsilon
+\end{equation}
+where $\epsilon \sim \mathcal{U}(-\Delta/2, \Delta/2)$ with quantization step $\Delta = 2^{-b+1} \cdot R$ for range $R$.
+
+The quantization noise has key properties:
+\begin{align}
+\mathbb{E}[\epsilon] &= 0 \quad \text{(unbiased)} \\
+\text{Var}[\epsilon] &= \frac{\Delta^2}{12} = \frac{2^{-2b+2} R^2}{12} = O(2^{-2b})
+\end{align}
+
+\subsection{LoRA Weight Decomposition}
+
+For LoRA adaptation with rank $r$, we have:
+\begin{equation}
+W = W_0 + \Delta W = W_0 + BA
+\end{equation}
+where $W_0 \in \mathbb{R}^{d \times d}$ are frozen pre-trained weights and $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times d}$ are trainable low-rank matrices with $r \ll d$.
+
+Under quantization:
+\begin{equation}
+W_q = W_0 + BA + \epsilon_{BA}
+\end{equation}
+where $\epsilon_{BA}$ represents quantization noise in the low-rank adaptation.
+
+\subsection{Main Theoretical Results}
+
+\begin{theorem}[LoRA Quantization Error Bound]
+\label{thm:lora_bound}
+For LoRA fine-tuning with b-bit quantization and rank $r$, the excess risk satisfies:
+\begin{equation}
+\mathbb{E}[\mathcal{L}(\hat{\theta}_q)] - \mathcal{L}(\theta^*) \leq \underbrace{\tilde{\mathcal{O}}\left(\frac{\sqrt{r}}{\sqrt{N}}\right)}_{\text{Generalization}} + \underbrace{\mathcal{O}\left(r \cdot 2^{-2b} \sigma_g^2\right)}_{\text{Quantization}}
+\end{equation}
+where $\hat{\theta}_q$ are quantized LoRA parameters, $\theta^*$ are optimal parameters, $\sigma_g^2$ is the squared gradient norm bound, $N$ is the number of training samples, and $r$ is the LoRA rank.
+\end{theorem}
+
+\begin{corollary}[Optimal Bit-width Selection]
+\label{cor:optimal_bits}
+The optimal bit-width that minimizes total error satisfies:
+\begin{equation}
+b^* \geq \frac{1}{2}\log_2(r) + \frac{1}{2}\log_2(N) + \frac{1}{2}\log_2(\sigma_g^2) + C
+\end{equation}
+for some problem-dependent constant $C$.
+
+For target error $\epsilon$, choose:
+\begin{equation}
+b \geq \log_2\left(\sqrt{\frac{r \sigma_g^2}{\epsilon}}\right)
+\end{equation}
+\end{corollary}
+
+\begin{theorem}[Quantized Gradient Variance]
+\label{thm:grad_variance}
+Under b-bit quantization, the gradient variance satisfies:
+\begin{equation}
+\text{Var}[\nabla_{BA} \mathcal{L}_q] \leq \text{Var}[\nabla_{BA} \mathcal{L}] + L^2 \|x\|^2 \cdot r \cdot 2^{-2b} R^2
+\end{equation}
+where $L$ is the Lipschitz constant of the loss function, $\|x\|^2$ is the input squared norm, and $R^2$ is the weight range squared.
+\end{theorem}
+
+\subsection{Key Insights}
+
+Our theoretical analysis reveals several important insights:
+
+\begin{enumerate}
+\item \textbf{Linear rank dependence:} Quantization error scales linearly with LoRA rank $r$, explaining why higher-rank adaptations require more precision.
+
+\item \textbf{Exponential precision scaling:} Quantization error decays exponentially with bit-width as $O(2^{-2b})$, providing strong incentive for higher precision.
+
+\item \textbf{Optimal precision rule:} The optimal bit-width grows logarithmically with rank, dataset size, and gradient magnitude, providing practical guidance for precision selection.
+
+\item \textbf{Gradient variance amplification:} Quantization increases gradient variance by $O(r \cdot 2^{-2b})$, potentially destabilizing training for low precision or high rank.
+\end{enumerate}
+
+These results provide theoretical foundation for recent empirical findings in quantized LoRA methods~\cite{qin2024irqlora,zhou2024qradaptor} and explain the effectiveness of joint rank-precision optimization strategies. 
